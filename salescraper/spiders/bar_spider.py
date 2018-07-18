@@ -14,3 +14,8 @@ class BarsSpider(scrapy.Spider):
                     'title': a.attrib['title'],
                     'link': a.attrib['href']
             }
+
+        next_page = response.css('td.next a.enabled::attr(href)').extract_first()
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
