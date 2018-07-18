@@ -9,8 +9,8 @@ class BarsSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'bars-%s.html' % page
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-        self.log('Saved file %s' % filename)
+        for a in response.css('div.ttl').css('a'):
+            yield {
+                    'title': a.attrib['title'],
+                    'link': a.attrib['href']
+            }
