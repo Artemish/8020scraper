@@ -26,5 +26,8 @@ class BarsSpider(scrapy.Spider):
 
     def parse_iframe_page(self, response):
         descr = response.css('table strong::text').extract_first()
+        list_items = response.css('tr ul li font::text').extract()
+        only_pieces = filter(lambda i: 'pc' in i, list_items)
         if descr is not None:
-            yield {'description': descr}
+            yield {'description': descr,
+                   'list_items': list(only_pieces)}

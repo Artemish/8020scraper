@@ -13,15 +13,17 @@ class FirstPassFilterPipeline(object):
 
     def process_item(self, item, spider):
         lower = item['description'].lower()
-        
-        if 'extru' not in lower:
-            raise DropItem
-        elif lower in self.seen:
+
+        for required in ['extru', 'slot']:
+            if required not in lower:
+                raise DropItem
+
+        if lower in self.seen:
             raise DropItem
 
         self.seen.add(lower)
 
-        return {'description': item['description']}
+        return item
 
 # class PageToLotPipeline(object):
 #     def process_item(self, item, spider):
