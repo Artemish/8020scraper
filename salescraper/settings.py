@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'salescraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'salescraper (+http://www.yourdomain.com)'
+USER_AGENT = 'Low-volume 80/20 Inc. scraper (mitch@artemish.net)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -64,9 +64,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'salescraper.pipelines.SalescraperPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'salescraper.pipelines.FirstPassFilterPipeline': 300
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

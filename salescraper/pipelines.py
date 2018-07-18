@@ -5,7 +5,25 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
+from scrapy.exceptions import DropItem
 
-class SalescraperPipeline(object):
+class FirstPassFilterPipeline(object):
+    def __init__(self):
+        self.seen = set()
+
     def process_item(self, item, spider):
-        return item
+        lower = item['title'].lower()
+        
+        if 'extru' not in lower:
+            raise DropItem
+        elif lower in self.seen:
+            raise DropItem
+
+        self.seen.add(lower)
+
+        return {'title': lower}
+
+# class PageToLotPipeline(object):
+#     def process_item(self, item, spider):
+#         link = item['link']
+#         return item
