@@ -12,7 +12,7 @@ class FirstPassFilterPipeline(object):
         self.seen = set()
 
     def process_item(self, item, spider):
-        lower = item['title'].lower()
+        lower = item['description'].lower()
         
         if 'extru' not in lower:
             raise DropItem
@@ -21,7 +21,7 @@ class FirstPassFilterPipeline(object):
 
         self.seen.add(lower)
 
-        return {'title': lower}
+        return {'description': item['description']}
 
 # class PageToLotPipeline(object):
 #     def process_item(self, item, spider):

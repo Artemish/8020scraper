@@ -19,5 +19,12 @@ class BarsSpider(scrapy.Spider):
             yield scrapy.Request(next_page, callback=self.parse)
 
     def parse_item_page(self, response):
-        title = response.css('h1.it-ttl::text').extract_first()
-        yield {'title': title}#, 'response': response}
+        iframe_url = response.css('iframe::attr(src)').extract_first()
+        if iframe_url is not None:
+            next_page = response.urljoin(iframe_url)
+            yield scrapy.Request(next_page, callback=self.parse_iframe_page)
+
+    def parse_iframe_page(self, response):
+        descr = response.css('table strong::text').extract_first()
+        if descr is not None:
+            yield {'description': descr}
