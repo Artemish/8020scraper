@@ -3,11 +3,11 @@ from . import constants
 import re
 
 series_regex = re.compile('[Ss]eries\s+(\d+)')
-inch_dim_regex = re.compile('(\d+)\s+[xX]\s+(\d+)')
+inch_dim_regex = re.compile('(\d+(\.\d+)?)"\s+[xX]\s+(\d+(\.\d+)?)"')
 mm_dim_regex = re.compile('(\d+)\s+[xX]\s+(\d+)')
 
-length_inch_regex = re.compile('(\d+)"\s+[lL]ong')
-length_mm_regex = re.compile('(\d+)mm\s+[lL]ong')
+length_inch_regex = re.compile('(\d+(\.\d+)?)"\s+[lL]ong')
+length_mm_regex = re.compile('(\d+(\.\d+)?)mm\s+[lL]ong')
 
 def description_to_lot(description):
     ret = {}
@@ -24,9 +24,12 @@ def description_to_lot(description):
         mm_dim = mm_dim_regex.search(description)
         if mm_dim is None:
             return None
-        dims = constants.mm_to_inch * mm_dim.groups()
+        groups = mm_dim.groups()
+        dims = (float(groups[0]) * constants.mm_to_inch,
+                float(groups[2]) * constants.mm_to_inch)
     else:
-        dims = inch_dim.groups()
+        groups = inch_dim.groups()
+        dims = (float(groups[0]), float(groups[2]))
 
     ret['Dimensions'] = dims
 
@@ -36,9 +39,9 @@ def description_to_lot(description):
         mm_len = inch_mm_regex.search(description)
         if mm_len is None:
             return None
-        length = constants.mm_to_inch * mm_len.groups()[0]
+        length = constants.mm_to_inch * float(mm_len.groups()[0])
     else:
-        length = inch_len.groups()[0]
+        length = float(inch_len.groups()[0])
 
     ret['Length'] = length
 
