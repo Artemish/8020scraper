@@ -6,6 +6,9 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exceptions import DropItem
+from . import lot
+
+import re
 
 class FirstPassFilterPipeline(object):
     def __init__(self):
@@ -25,7 +28,18 @@ class FirstPassFilterPipeline(object):
 
         return item
 
-# class PageToLotPipeline(object):
-#     def process_item(self, item, spider):
-#         link = item['link']
-#         return item
+class PageToLotPipeline(object):
+    def process_item(self, item, spider):
+        description = item['description']
+
+        if 'Lot' in description:
+            raise DropItem("No parsing lots yet")
+
+        l = lot.description_to_lot(description)
+
+        if l is None:
+            raise DropItem("Failed to parse lot: " + str(l))
+
+        l['original'] = description
+
+        return l
